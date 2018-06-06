@@ -42,8 +42,9 @@ c.RemoteUserAuthenticator.header_name = 'x-goog-authenticated-user-email'",
         local volumes = std.map(function(v)
           {
             name: v,
-            persistentVolumeClaim: {
-              claimName: v,
+            hostPath: {
+              path: v,
+              type: v
             },
           }, volumeClaims),
 

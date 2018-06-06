@@ -101,21 +101,25 @@ c.KubeSpawner.start_timeout = 60 * 30
 # see https://github.com/kubeflow/kubeflow/pull/22#issuecomment-350500944
 pvc_mount = os.environ.get('NOTEBOOK_PVC_MOUNT')
 if pvc_mount and pvc_mount != 'null':
-    c.KubeSpawner.user_storage_pvc_ensure = True
+    # c.KubeSpawner.user_storage_pvc_ensure = True
     # How much disk space do we want?
-    c.KubeSpawner.user_storage_capacity = '10Gi'
-    c.KubeSpawner.pvc_name_template = 'claim-{username}{servername}'
-    c.KubeSpawner.volumes = [
-      {
-        'name': 'volume-{username}{servername}',
-        'persistentVolumeClaim': {
-          'claimName': 'claim-{username}{servername}'
+    # c.KubeSpawner.user_storage_capacity = '10Gi'
+    # c.KubeSpawner.pvc_name_template = 'claim-{username}{servername}'
+    volumes.append(
+        {
+            'name': 'host-path-pv',
+            'hostPath': {
+                 # directory location on host
+                 'path': '/home/ai2-ironman/Documents/code/kubeflow-mount',
+                 # this field is optional
+                 'type': 'Directory'
+            }
         }
-      }
-    ]
-    c.KubeSpawner.volume_mounts = [
-      {
-        'mountPath': pvc_mount,
-        'name': 'volume-{username}{servername}'
-      }
-    ]
+    )
+    volume_mounts.append(
+        {
+            'mountPath': pvc_mount,
+            'name': 'host-path-pv'
+        }
+    )
+
